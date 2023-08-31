@@ -1,7 +1,46 @@
-#pdf {
-    background-color: #242424;
+.toolbar {
+    background-color: #171818;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+}
+
+.drctnBar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.drctnBtn {
+    border: none;
+    background-color: white;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border-radius: 3px;
+    color: #171818;
+    cursor: pointer;
+}
+
+.disabledDrctnBtn {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+}
+
+.zoomBar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pdf {
+    background-color: #343735;
     margin: 0;
     padding: 0;
+    overflow: hidden;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -13,11 +52,70 @@
     user-select: none;
 }
 
+.pdfThumbContainer {
+    max-height: calc(100vh - 50px);
+    min-height: calc(100vh - 50px);
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #171818;
+
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.pdfThumbPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 50px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.activeThumbPage {
+    opacity: 1;
+}
+
+.pdfThumbPageCount {
+    margin-top: 5px;
+    font-size: 14px;
+    color: white;
+}
+
+.pdfViewer {
+    max-height: calc(100vh - 50px);
+    min-height: calc(100vh - 50px);
+    width: 100%;
+
+    overflow: auto;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.pdfPage {
+    margin: 20px 0;
+}
+
 @media print {
 
     html,
     body {
         display: none;
         /* hide whole page */
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .pdfThumbContainer {
+        display: none;
     }
 }

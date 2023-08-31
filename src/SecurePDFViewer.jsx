@@ -44,15 +44,17 @@ function SecurePDFViewer({
     }, []);
 
     function handleScroll(event) {
-        const scrollTop = event.target.scrollTop;
+        try {
+            const scrollTop = event.target.scrollTop;
 
-        const pagesEle = event.target.querySelectorAll('.react-pdf__Page')
-        const thisPageHeight = pagesEle?.[0]?.getBoundingClientRect()?.height;
+            const pagesEle = event.target.querySelectorAll('.react-pdf__Page')
+            const thisPageHeight = pagesEle?.[0]?.getBoundingClientRect()?.height;
 
-        console.log("thisPageHeight", thisPageHeight)
-
-        const activeidx = Math.round(scrollTop / thisPageHeight);
-        setActivePage(activeidx + 1);
+            const activeidx = Math.round(scrollTop / thisPageHeight);
+            setActivePage(activeidx + 1);
+        } catch (error) {
+            console.log("failed to handle scroll", error);
+        }
     }
 
     useEffect(() => {

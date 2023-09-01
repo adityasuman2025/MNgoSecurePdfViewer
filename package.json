@@ -1,7 +1,7 @@
 {
   "name": "react-secure-pdf-viewer-mngo",
   "private": false,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "sideEffects": false,
   "type": "module",
   "homepage": "./",
@@ -24,7 +24,7 @@
     "url": "git@github.com:adityasuman2025/MNgoSecurePdfViewer.git"
   },
   "scripts": {
-    "start": "vite",
+    "start": "vite --host",
     "build": "tsc && IS_DEPL=true vite build",
     "lib-build": "tsc && vite build",
     "build-publish": "npm run lib-build && npm publish",

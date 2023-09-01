@@ -39,7 +39,7 @@ function App() {
                 }} />
 
                 <button type="submit"
-                    style={{ height: 40, width: 100, borderRadius: 5, border: "1px solid lightgrey", background: "white" }}
+                    style={{ height: 40, width: 100, borderRadius: 5, border: "1px solid lightgrey", background: "white", color: "black" }}
                     onClick={() => {
                         location.reload();
                     }} >

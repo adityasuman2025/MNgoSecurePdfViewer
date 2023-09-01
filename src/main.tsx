@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 
 import { MNgoSecurePDFViewer } from './lib'
-import secured from './secured.pdf'
+import sample from './sample.pdf'
 
 function blobToBase64(blob: any): any {
     return new Promise((resolve, _) => {
@@ -48,7 +48,7 @@ function App() {
             </div>
 
             <MNgoSecurePDFViewer
-                pdfUrl={pdfFile || secured}
+                pdfUrl={pdfFile || sample}
                 pdfPassword={pdfPassword || "sample"}
                 compHeight={"calc(100vh - 69px)"}
             />

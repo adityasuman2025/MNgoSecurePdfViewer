@@ -17,7 +17,10 @@ Secure PDF Viewer
 ✅ open pdf in pdf viewer using the given password programmatically
 */
 
-const MWEB_WIDTH = 650, THUMB_VIEW_WIDTH = 768, TOOL_BAR_HEIGHT = 50;
+const MWEB_WIDTH = 650, THUMB_VIEW_WIDTH = 768, TOOL_BAR_HEIGHT = 60;
+const TOOL_BAR_BTN_CLASS_NAME = "bn bg-white black br2 pointer f6-5 mh-0-33 pv-0-33 ph-0-67";
+const DISABLED_TOOL_BAR_BTN_CLASS_NAME = "o-50 pointer-events-none";
+
 
 function debounce(func, delay) {
     let timer;
@@ -30,6 +33,19 @@ function debounce(func, delay) {
 }
 
 function SecurePDFViewer({
+    styles: {
+        pdfComponentClassName = "",
+
+        toolbarClassName = "",
+        toolbarSegClassName = "",
+        toolBarBtnClassName = "",
+
+        pdfViewerClassName = "",
+        pdfPageClassName = "",
+
+        pdfThumbContainerClassName = "",
+        pdfThumbPageClassName = "",
+    },
     pdfUrl,
     pdfPassword,
 }) {
@@ -112,34 +128,35 @@ function SecurePDFViewer({
         <>
             {
                 pdfUrl &&
-                <div>
-                    <div className='toolbar' style={{ height: TOOL_BAR_HEIGHT }}>
-                        <div className='drctnBar'>
+                <div className={`no-user-select ${pdfComponentClassName}`}>
+                    <div className={`flex items-center justify-between white ba ph-1 ${toolbarClassName}`} style={{ height: TOOL_BAR_HEIGHT }}>
+                        <div className={`flex items-center justify-center ${toolbarSegClassName}`}>
                             <button
-                                className={`drctnBtn ${activePage === 1 ? "disabledDrctnBtn" : ""}`}
+                                className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName} ${activePage === 1 ? DISABLED_TOOL_BAR_BTN_CLASS_NAME : ""}`}
                                 onClick={() => handleGoToPage(activePage - 1)}
                             >{"<"}</button>
                             <button
-                                className={`drctnBtn ${activePage === totalPagesCount ? "disabledDrctnBtn" : ""}`}
+                                className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName} ${activePage === totalPagesCount ? DISABLED_TOOL_BAR_BTN_CLASS_NAME : ""}`}
                                 onClick={() => handleGoToPage(activePage + 1)}
                             >{">"}</button>
 
                             <div>Page {activePage}<span style={{ opacity: 0.5 }}>/{totalPagesCount}</span></div>
                         </div>
 
-                        <div className='drctnBar'>
-                            <button className={`drctnBtn`} onClick={() => setScale(prev => prev - 0.1)}>{"-"}</button>
-                            <div className={`drctnBtn`}>{Math.floor(scale * 100)}%</div>
-                            <button className={`drctnBtn`} onClick={() => setScale(prev => prev + 0.1)}>{"+"}</button>
+                        <div className={`flex items-center justify-center ${toolbarSegClassName}`}>
+                            <button className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`} onClick={() => setScale(prev => prev - 0.1)}>{"-"}</button>
+                            <div className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`}>{Math.floor(scale * 100)}%</div>
+                            <button className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`} onClick={() => setScale(prev => prev + 0.1)}>{"+"}</button>
 
-                            <button className={`drctnBtn`} onClick={toggleFullScreen}>{"[-]"}</button>
+                            <button className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`} onClick={toggleFullScreen}>{"[-]"}</button>
                         </div>
                     </div>
 
-                    <div className='pdf'>
+                    <div className="overflow-hidden relative flex items-center justify-center">
                         {
-                            windowWidth > THUMB_VIEW_WIDTH &&
-                            <div className='pdfThumbContainer'
+                            (windowWidth > THUMB_VIEW_WIDTH) &&
+                            <div
+                                className={`relative top-0 left-0 overflow-x-hidden overflow-y-auto ${pdfThumbContainerClassName}`}
                                 style={{ maxHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)`, minHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)` }}
                             >
                                 <Document file={pdfUrl} onPassword={(callback) => callback(pdfPassword)} >
@@ -147,11 +164,11 @@ function SecurePDFViewer({
                                         Array(totalPagesCount).fill(0).map((_, idx) =>
                                             <div
                                                 key={idx + 1}
-                                                className={`pdfThumbPage ${activePage === idx + 1 ? 'activeThumbPage' : ''}`}
+                                                className={`flex flex-column items-center justify-center pointer o-80 mv-1-33 mh-3-33 ${pdfThumbPageClassName} ${activePage === idx + 1 ? 'o-100' : ''}`}
                                                 onClick={() => handleGoToPage(idx + 1)}
                                             >
                                                 <Page scale={0.2} pageNumber={idx + 1} renderTextLayer={false} renderAnnotationLayer={false} />
-                                                <div className='pdfThumbPageCount'>{idx + 1}</div>
+                                                <div className="mt-0-33 white f6">{idx + 1}</div>
                                             </div>
                                         )
                                     }
@@ -160,6 +177,7 @@ function SecurePDFViewer({
                         }
 
                         <div id='pdfViewer'
+                            className={`flex justify-center overflow-auto w-100  ${pdfViewerClassName}`}
                             style={{ maxHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)`, minHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)` }}
                         >
                             <Document
@@ -169,7 +187,7 @@ function SecurePDFViewer({
                             >
                                 {
                                     Array(totalPagesCount).fill(0).map((_, idx) =>
-                                        <div key={idx + 1} className='pdfPage'>
+                                        <div key={idx + 1} className={`mv-1-33  ${pdfPageClassName}`}>
                                             <Page
                                                 pageNumber={idx + 1}
                                                 scale={scale * (windowWidth < MWEB_WIDTH ? 0.5 : 1)}

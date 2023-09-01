@@ -8,6 +8,11 @@ const pdfUrl = "http://www.bitsavers.org/pdf/3Com/3+Open/5385-01_3+Open_for_Maci
 function App() {
     return (
         <SecurePDFViewer
+            styles={{
+                pdfComponentClassName: "pdfComponent",
+                toolbarClassName: "toolbar",
+                pdfThumbContainerClassName: "pdfThumbContainer",
+            }}
             pdfUrl={sample}
             pdfPassword={"sample"}
         />

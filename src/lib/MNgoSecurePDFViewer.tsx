@@ -22,12 +22,14 @@ const TOOL_BAR_BTN_CLASS_NAME = "bn bg-white black br2 pointer f6-5 mh-0-33 pv-0
 const DISABLED_TOOL_BAR_BTN_CLASS_NAME = "o-50 pointer-events-none";
 
 
-function debounce(func, delay) {
-    let timer;
-    return function (...args) {
+function debounce(func: (...args: any[]) => void, delay: number) {
+    let timer: any;
+    return function (...args: any[]) {
+        //@ts-ignore
+        const thisContext: any = this;
         clearTimeout(timer);
         timer = setTimeout(() => {
-            func.apply(this, args);
+            func.apply(thisContext, args);
         }, delay);
     }
 }
@@ -48,11 +50,15 @@ function MNgoSecurePDFViewer({
     },
     pdfUrl,
     pdfPassword,
+}: {
+    styles: {[key: string]: string},
+    pdfUrl: string,
+    pdfPassword?: string,
 }) {
-    const [totalPagesCount, setTotalPagesCount] = useState(null);
-    const [activePage, setActivePage] = useState(1);
-    const [scale, setScale] = useState(1);
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+    const [totalPagesCount, setTotalPagesCount] = useState<number | null>(null);
+    const [activePage, setActivePage] = useState<number>(1);
+    const [scale, setScale] = useState<number>(1);
+    const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
 
     useEffect(() => {
         /*------capture window resize------*/
@@ -65,13 +71,13 @@ function MNgoSecurePDFViewer({
         /*------capture pdfViewer div scroll------*/
         const debouncedHandleScroll = debounce(handlePdfViewerScroll, 200);
 
-        const pdfViewer = document.getElementById('pdfViewer');
+        const pdfViewer: any = document.getElementById('pdfViewer');
         pdfViewer.addEventListener("scroll", debouncedHandleScroll);
         /*------capture pdfViewer div scroll------*/
 
 
         /*------disable context menu------*/
-        function handleContextmenu(e) {
+        function handleContextmenu(e: any) {
             e.preventDefault();
         }
 
@@ -86,7 +92,7 @@ function MNgoSecurePDFViewer({
         }
     }, []);
 
-    function handlePdfViewerScroll(event) {
+    function handlePdfViewerScroll(event: any): void {
         try {
             const scrollTop = event.target.scrollTop;
 
@@ -100,15 +106,15 @@ function MNgoSecurePDFViewer({
         }
     }
 
-    function onDocumentLoadSuccess({ numPages: totalPagesCount }) {
+    function onDocumentLoadSuccess({ numPages: totalPagesCount }: { numPages: number }) {
         setTotalPagesCount(totalPagesCount);
     }
 
-    function handleGoToPage(pageIdx) {
+    function handleGoToPage(pageIdx: number) {
         setActivePage(pageIdx);
 
         try {
-            const pdfViewer = document.getElementById('pdfViewer');
+            const pdfViewer:any = document.getElementById('pdfViewer');
             const selectedPage = pdfViewer.querySelectorAll(`.react-pdf__Page[data-page-number="${pageIdx}"]`);
             selectedPage?.[0]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } catch (error) {
@@ -159,7 +165,7 @@ function MNgoSecurePDFViewer({
                                 className={`relative top-0 left-0 overflow-x-hidden overflow-y-auto ${pdfThumbContainerClassName}`}
                                 style={{ maxHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)`, minHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)` }}
                             >
-                                <Document file={pdfUrl} onPassword={(callback) => callback(pdfPassword)} >
+                                <Document file={pdfUrl} onPassword={(cb: any) => cb(pdfPassword)} >
                                     {
                                         Array(totalPagesCount).fill(0).map((_, idx) =>
                                             <div
@@ -183,7 +189,7 @@ function MNgoSecurePDFViewer({
                             <Document
                                 file={pdfUrl}
                                 onLoadSuccess={onDocumentLoadSuccess}
-                                onPassword={(callback) => callback(pdfPassword)}
+                                onPassword={(cb: any) => cb(pdfPassword)}
                             >
                                 {
                                     Array(totalPagesCount).fill(0).map((_, idx) =>

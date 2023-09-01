@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf';
 import "react-pdf/dist/esm/Page/AnnotationLayer.css"
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-import './SecurePDFViewer.css';
+import './MNgoSecurePDFViewer.css';
 
 /*
 Secure PDF Viewer
@@ -32,7 +32,7 @@ function debounce(func, delay) {
     }
 }
 
-function SecurePDFViewer({
+function MNgoSecurePDFViewer({
     styles: {
         pdfComponentClassName = "",
 
@@ -205,4 +205,4 @@ function SecurePDFViewer({
     )
 }
 
-export default SecurePDFViewer;
+export default MNgoSecurePDFViewer;

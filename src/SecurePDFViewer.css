@@ -1,6 +1,5 @@
 .toolbar {
     background-color: #171818;
-    height: 50px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -29,12 +28,6 @@
     pointer-events: none;
 }
 
-.zoomBar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .pdf {
     background-color: #343735;
     margin: 0;
@@ -53,9 +46,6 @@
 }
 
 .pdfThumbContainer {
-    max-height: calc(100vh - 50px);
-    min-height: calc(100vh - 50px);
-
     position: absolute;
     top: 0;
     left: 0;
@@ -89,9 +79,7 @@
     color: white;
 }
 
-.pdfViewer {
-    max-height: calc(100vh - 50px);
-    min-height: calc(100vh - 50px);
+#pdfViewer {
     width: 100%;
 
     overflow: auto;
@@ -111,11 +99,5 @@
     body {
         display: none;
         /* hide whole page */
-    }
-}
-
-@media screen and (max-width: 768px) {
-    .pdfThumbContainer {
-        display: none;
     }
 }

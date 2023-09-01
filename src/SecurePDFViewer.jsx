@@ -5,8 +5,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 import './SecurePDFViewer.css';
 
 /*
-//ref: https://www.npmjs.com/package/react-pdf
-secure pdf viewer
+Secure PDF Viewer
 
 ✅ block right click
 ✅ disable user select
@@ -17,6 +16,8 @@ secure pdf viewer
 ❌ screen recording
 ✅ open pdf in pdf viewer using the given password programmatically
 */
+
+const MWEB_WIDTH = 650, THUMB_VIEW_WIDTH = 768, TOOL_BAR_HEIGHT = 50;
 
 function debounce(func, delay) {
     let timer;
@@ -35,40 +36,53 @@ function SecurePDFViewer({
     const [totalPagesCount, setTotalPagesCount] = useState(null);
     const [activePage, setActivePage] = useState(1);
     const [scale, setScale] = useState(1);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     useEffect(() => {
-        const debouncedHandleScroll = debounce(handleScroll, 200);
+        /*------capture window resize------*/
+        const debouncedHandleResize = debounce(() => { setWindowWidth(window.innerWidth) }, 200);
+
+        window.onresize = debouncedHandleResize;
+        /*------capture window resize------*/
+
+
+        /*------capture pdfViewer div scroll------*/
+        const debouncedHandleScroll = debounce(handlePdfViewerScroll, 200);
 
         const pdfViewer = document.getElementById('pdfViewer');
         pdfViewer.addEventListener("scroll", debouncedHandleScroll);
-    }, []);
+        /*------capture pdfViewer div scroll------*/
 
-    function handleScroll(event) {
-        try {
-            const scrollTop = event.target.scrollTop;
 
-            const pagesEle = event.target.querySelectorAll('.react-pdf__Page')
-            const thisPageHeight = pagesEle?.[0]?.getBoundingClientRect()?.height;
-
-            const activeidx = Math.round(scrollTop / thisPageHeight);
-            setActivePage(activeidx + 1);
-        } catch (error) {
-            console.log("failed to handle scroll", error);
-        }
-    }
-
-    useEffect(() => {
         /*------disable context menu------*/
         function handleContextmenu(e) {
             e.preventDefault();
         }
 
         document.addEventListener('contextmenu', handleContextmenu)
-        return function cleanup() {
-            document.removeEventListener('contextmenu', handleContextmenu)
-        }
         /*------disable context menu------*/
+
+
+        return function cleanup() {
+            window.onresize = null;
+            pdfViewer.removeEventListener("scroll", debouncedHandleScroll);
+            document.removeEventListener('contextmenu', handleContextmenu);
+        }
     }, []);
+
+    function handlePdfViewerScroll(event) {
+        try {
+            const scrollTop = event.target.scrollTop;
+
+            const pagesEle = event.target.querySelectorAll('.react-pdf__Page');
+            const pageHeight = pagesEle?.[0]?.getBoundingClientRect()?.height;
+
+            const activeidx = Math.round(scrollTop / pageHeight);
+            setActivePage(activeidx + 1);
+        } catch (error) {
+            console.log("failed to handle scroll", error);
+        }
+    }
 
     function onDocumentLoadSuccess({ numPages: totalPagesCount }) {
         setTotalPagesCount(totalPagesCount);
@@ -80,7 +94,7 @@ function SecurePDFViewer({
         try {
             const pdfViewer = document.getElementById('pdfViewer');
             const selectedPage = pdfViewer.querySelectorAll(`.react-pdf__Page[data-page-number="${pageIdx}"]`);
-            selectedPage?.[0]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            selectedPage?.[0]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } catch (error) {
             console.log("failed to scroll to page", pageIdx, error);
         }
@@ -99,7 +113,7 @@ function SecurePDFViewer({
             {
                 pdfUrl &&
                 <div>
-                    <div className='toolbar'>
+                    <div className='toolbar' style={{ height: TOOL_BAR_HEIGHT }}>
                         <div className='drctnBar'>
                             <button
                                 className={`drctnBtn ${activePage === 1 ? "disabledDrctnBtn" : ""}`}
@@ -113,7 +127,7 @@ function SecurePDFViewer({
                             <div>Page {activePage}<span style={{ opacity: 0.5 }}>/{totalPagesCount}</span></div>
                         </div>
 
-                        <div className='zoomBar'>
+                        <div className='drctnBar'>
                             <button className={`drctnBtn`} onClick={() => setScale(prev => prev - 0.1)}>{"-"}</button>
                             <div className={`drctnBtn`}>{Math.floor(scale * 100)}%</div>
                             <button className={`drctnBtn`} onClick={() => setScale(prev => prev + 0.1)}>{"+"}</button>
@@ -123,27 +137,31 @@ function SecurePDFViewer({
                     </div>
 
                     <div className='pdf'>
-                        <div className='pdfThumbContainer'>
-                            <Document
-                                file={pdfUrl}
-                                onPassword={(callback) => callback(pdfPassword)}
+                        {
+                            windowWidth > THUMB_VIEW_WIDTH &&
+                            <div className='pdfThumbContainer'
+                                style={{ maxHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)`, minHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)` }}
                             >
-                                {
-                                    Array(totalPagesCount).fill(0).map((_, idx) =>
-                                        <div
-                                            key={idx + 1}
-                                            className={`pdfThumbPage ${activePage === idx + 1 ? 'activeThumbPage' : ''}`}
-                                            onClick={() => handleGoToPage(idx + 1)}
-                                        >
-                                            <Page scale={0.2} pageNumber={idx + 1} renderTextLayer={false} renderAnnotationLayer={false} />
-                                            <div className='pdfThumbPageCount'>{idx + 1}</div>
-                                        </div>
-                                    )
-                                }
-                            </Document>
-                        </div>
+                                <Document file={pdfUrl} onPassword={(callback) => callback(pdfPassword)} >
+                                    {
+                                        Array(totalPagesCount).fill(0).map((_, idx) =>
+                                            <div
+                                                key={idx + 1}
+                                                className={`pdfThumbPage ${activePage === idx + 1 ? 'activeThumbPage' : ''}`}
+                                                onClick={() => handleGoToPage(idx + 1)}
+                                            >
+                                                <Page scale={0.2} pageNumber={idx + 1} renderTextLayer={false} renderAnnotationLayer={false} />
+                                                <div className='pdfThumbPageCount'>{idx + 1}</div>
+                                            </div>
+                                        )
+                                    }
+                                </Document>
+                            </div>
+                        }
 
-                        <div className='pdfViewer' id='pdfViewer'>
+                        <div id='pdfViewer'
+                            style={{ maxHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)`, minHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)` }}
+                        >
                             <Document
                                 file={pdfUrl}
                                 onLoadSuccess={onDocumentLoadSuccess}
@@ -152,7 +170,11 @@ function SecurePDFViewer({
                                 {
                                     Array(totalPagesCount).fill(0).map((_, idx) =>
                                         <div key={idx + 1} className='pdfPage'>
-                                            <Page pageNumber={idx + 1} scale={scale} renderTextLayer={false} renderAnnotationLayer={false} />
+                                            <Page
+                                                pageNumber={idx + 1}
+                                                scale={scale * (windowWidth < MWEB_WIDTH ? 0.5 : 1)}
+                                                renderTextLayer={false} renderAnnotationLayer={false}
+                                            />
                                         </div>
                                     )
                                 }

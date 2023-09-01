@@ -10,14 +10,14 @@ This library is available at [react-secure-pdf-viewer-mngo](https://www.npmjs.co
 
 A JavaScript React Library (npm package) to open any pdf (password protected or non-protected both) having thumbnail, jump to page, zoom features and security features like
 
-✅ block right click
-✅ disable user select
-✅ block download
-✅ block getting pdf url by inspecting elements
-✅ block printing of the page/pdf
-❌ screenshot
-❌ screen recording
-✅ open pdf in pdf viewer using the given password programmatically
+1. ✅ block right click
+2. ✅ disable user select
+3. ✅ block download
+4. ✅ block getting pdf url by inspecting elements
+5. ✅ block printing of the page/pdf
+6. ❌ screenshot
+7. ❌ screen recording
+8. ✅ open pdf in pdf viewer using the given password programmatically
 
 ## Screenshots:
 

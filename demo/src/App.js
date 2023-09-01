@@ -5,11 +5,6 @@ import secured from "./secured.pdf";
 function App() {
     return (
         <MNgoSecurePDFViewer
-            styles={{
-                pdfComponentClassName: "pdfComponent",
-                toolbarClassName: "toolbar",
-                pdfThumbContainerClassName: "pdfThumbContainer",
-            }}
             pdfUrl={secured}
             pdfPassword={"sample"}
         />

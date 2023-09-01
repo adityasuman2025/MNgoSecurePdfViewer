@@ -47,13 +47,15 @@ function MNgoSecurePDFViewer({
 
         pdfThumbContainerClassName = "",
         pdfThumbPageClassName = "",
-    },
+    } = {},
     pdfUrl,
     pdfPassword,
+    compHeight = "100vh",
 }: {
-    styles: {[key: string]: string},
+    styles?: { [key: string]: string },
     pdfUrl: string,
     pdfPassword?: string,
+    compHeight?: string,
 }) {
     const [totalPagesCount, setTotalPagesCount] = useState<number | null>(null);
     const [activePage, setActivePage] = useState<number>(1);
@@ -114,7 +116,7 @@ function MNgoSecurePDFViewer({
         setActivePage(pageIdx);
 
         try {
-            const pdfViewer:any = document.getElementById('pdfViewer');
+            const pdfViewer: any = document.getElementById('pdfViewer');
             const selectedPage = pdfViewer.querySelectorAll(`.react-pdf__Page[data-page-number="${pageIdx}"]`);
             selectedPage?.[0]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         } catch (error) {
@@ -134,8 +136,8 @@ function MNgoSecurePDFViewer({
         <>
             {
                 pdfUrl &&
-                <div className={`no-user-select ${pdfComponentClassName}`}>
-                    <div className={`flex items-center justify-between white ba ph-1 ${toolbarClassName}`} style={{ height: TOOL_BAR_HEIGHT }}>
+                <div className={`no-user-select pdfComponent ${pdfComponentClassName}`}>
+                    <div className={`flex items-center justify-between white ba ph-1 toolbar ${toolbarClassName}`} style={{ height: TOOL_BAR_HEIGHT }}>
                         <div className={`flex items-center justify-center ${toolbarSegClassName}`}>
                             <button
                                 className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName} ${activePage === 1 ? DISABLED_TOOL_BAR_BTN_CLASS_NAME : ""}`}
@@ -162,8 +164,8 @@ function MNgoSecurePDFViewer({
                         {
                             (windowWidth > THUMB_VIEW_WIDTH) &&
                             <div
-                                className={`relative top-0 left-0 overflow-x-hidden overflow-y-auto ${pdfThumbContainerClassName}`}
-                                style={{ maxHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)`, minHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)` }}
+                                className={`relative top-0 left-0 overflow-x-hidden overflow-y-auto pdfThumbContainer ${pdfThumbContainerClassName}`}
+                                style={{ maxHeight: `calc(${compHeight} - ${TOOL_BAR_HEIGHT}px)`, minHeight: `calc(${compHeight} - ${TOOL_BAR_HEIGHT}px)` }}
                             >
                                 <Document file={pdfUrl} onPassword={(cb: any) => cb(pdfPassword)} >
                                     {
@@ -182,9 +184,9 @@ function MNgoSecurePDFViewer({
                             </div>
                         }
 
-                        <div id='pdfViewer'
-                            className={`flex justify-center overflow-auto w-100  ${pdfViewerClassName}`}
-                            style={{ maxHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)`, minHeight: `calc(100vh - ${TOOL_BAR_HEIGHT}px)` }}
+                        <div id="pdfViewer"
+                            className={`flex justify-center overflow-auto w-100 ${pdfViewerClassName}`}
+                            style={{ maxHeight: `calc(${compHeight} - ${TOOL_BAR_HEIGHT}px)`, minHeight: `calc(${compHeight} - ${TOOL_BAR_HEIGHT}px)` }}
                         >
                             <Document
                                 file={pdfUrl}

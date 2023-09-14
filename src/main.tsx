@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 
+import UploadButton from './UploadButton'
 import { MNgoSecurePDFViewer } from './lib'
 import sample from './sample.pdf'
 
@@ -16,41 +17,46 @@ function blobToBase64(blob: any): any {
 const pdfFile = localStorage.getItem("pdfFile");
 const pdfPassword = localStorage.getItem("pdfPassword");
 
+const btnStyle = { fontSize: "14px", display: "flex", alignItems: "center", justifyContent: "center", height: 23, padding: "0px 10px", borderRadius: 5, cursor: "pointer", border: "0.5px solid #ccc", background: "white", minWidth: "fit-content" };
+const btnWrapperStyle = { height: 40, display: "flex", alignItems: "center", justifyContent: "center", maxWidth: "100%", overflow: "auto" };
+
 function App() {
     return (
         <>
-            <div style={{ background: "#f1f1f1", height: 65, display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap" }}>
-                <label>Upload PDF
-                    <input type="file" name="uploadImage"
-                        accept="application/pdf"
-                        onChange={async (e) => {
-                            const file = e?.target?.files?.[0];
-                            if (file) {
-                                const base64File = await blobToBase64(file);
+            <div style={btnWrapperStyle}>
+                <UploadButton
+                    btnText='Upload PDF'
+                    btnStyle={btnStyle}
+                    accept="application/pdf"
+                    onUpload={async (files) => {
+                        const file = files?.[0];
+                        if (file) {
+                            const base64File = await blobToBase64(file);
 
-                                localStorage.setItem("pdfFile", base64File); // storing image in localStorage
-                            }
-                        }}
-                    />
-                </label>
+                            localStorage.setItem("pdfFile", base64File); // storing image in localStorage
+                        }
+                    }}
+                />
 
-                <input type="text" placeholder='pdf password (if any)' style={{ height: 30, padding: 5, width: 180, margin: "0 10px", borderRadius: 5, border: "1px solid lightgrey" }} onChange={(e) => {
-                    localStorage.setItem("pdfPassword", e.target.value);
-                }} />
+                <input
+                    type="text" placeholder='pdf password (if any)'
+                    style={{ ...btnStyle, margin: "0px 20px", cursor: "default" }} onChange={(e) => {
+                        localStorage.setItem("pdfPassword", e.target.value);
+                    }}
+                />
 
-                <button type="submit"
-                    style={{ height: 40, width: 100, borderRadius: 5, border: "1px solid lightgrey", background: "white", color: "black" }}
-                    onClick={() => {
-                        location.reload();
-                    }} >
-                    submit
-                </button>
+                <div role="button"
+                    style={btnStyle}
+                    onClick={() => location.reload()}
+                >
+                    Submit
+                </div>
             </div>
 
             <MNgoSecurePDFViewer
                 pdfUrl={pdfFile || sample}
                 pdfPassword={pdfPassword || "sample"}
-                compHeight={"calc(100vh - 69px)"}
+                compHeight={"calc(100vh - 45px)"}
             />
         </>
     )

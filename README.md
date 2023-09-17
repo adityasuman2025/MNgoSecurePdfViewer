@@ -51,12 +51,14 @@ A JavaScript React Library (npm package) to open any pdf (password protected or 
                }
 
 2.  `securityOptions` by default all security options are enabled, 
+
                 {
                     blockRightClick: boolean, // by default true
                     blockUserSelection: boolean, // by default true
                     blockPrint: boolean, // by default true
                     blockDownload: boolean, // by default true
                }
+               
 3.  `pdfUrl` url (internal or extneral) of the pdf to open
 4.  `pdfPassword` password of the pdf if, the pdf is password protected
 5.  `compHeight` height of the component

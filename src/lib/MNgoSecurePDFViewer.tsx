@@ -148,6 +148,7 @@ function MNgoSecurePDFViewer({
         link.click();
     }
 
+    const iconDimn = windowWidth <= MWEB_WIDTH ? 9 : 11;
     return (
         <>
             {
@@ -161,14 +162,14 @@ function MNgoSecurePDFViewer({
                                 className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName} ${activePage === 1 ? DISABLED_TOOL_BAR_BTN_CLASS_NAME : ''}`}
                                 onClick={() => handleGoToPage(activePage - 1)}
                             >
-                                <img src={prevIcon} alt="prev" height={windowWidth <= MWEB_WIDTH ? 9 : 11} />
+                                <img src={prevIcon} alt="prev" height={iconDimn} width={iconDimn} />
                             </div>
 
                             <div
                                 className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName} ${activePage === totalPagesCount ? DISABLED_TOOL_BAR_BTN_CLASS_NAME : ''}`}
                                 onClick={() => handleGoToPage(activePage + 1)}
                             >
-                                <img src={nextIcon} alt="next" height={windowWidth <= MWEB_WIDTH ? 9 : 11} />
+                                <img src={nextIcon} alt="next" height={iconDimn} width={iconDimn} />
                             </div>
 
                             <div className='f6'>Page {activePage}<span style={{ opacity: 0.5 }}>/{totalPagesCount}</span></div>
@@ -179,14 +180,14 @@ function MNgoSecurePDFViewer({
                                 className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`}
                                 onClick={() => setScale((prev) => prev - 0.1)}
                             >
-                                <img src={minusIcon} alt="minus" height={windowWidth <= MWEB_WIDTH ? 8 : 11} />
+                                <img src={minusIcon} alt="minus" height={iconDimn} width={iconDimn} />
                             </div>
                             <div className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`}>{Math.floor(scale * 100)}%</div>
                             <div
                                 className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`}
                                 onClick={() => setScale((prev) => prev + 0.1)}
                             >
-                                <img src={plusIcon} alt="plus" height={windowWidth <= MWEB_WIDTH ? 8 : 11} />
+                                <img src={plusIcon} alt="plus" height={iconDimn} width={iconDimn} />
                             </div>
 
                             {
@@ -195,7 +196,7 @@ function MNgoSecurePDFViewer({
                                     className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`}
                                     onClick={handleDownloadClick}
                                 >
-                                    <img src={downloadIcon} alt="download" height={windowWidth <= MWEB_WIDTH ? 8 : 11} />
+                                    <img src={downloadIcon} alt="download" height={iconDimn} width={iconDimn} />
                                 </div>
                             }
 
@@ -203,7 +204,7 @@ function MNgoSecurePDFViewer({
                                 className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`}
                                 onClick={toggleFullScreen}
                             >
-                                <img src={fullScreenIcon} alt="fullScreen" height={windowWidth <= MWEB_WIDTH ? 8 : 11} />
+                                <img src={fullScreenIcon} alt="fullScreen" height={iconDimn} width={iconDimn} />
                             </div>
                         </div>
                     </div>

@@ -54,6 +54,12 @@ function App() {
             </div>
 
             <MNgoSecurePDFViewer
+                securityOptions={{
+                    // blockRightClick: false,
+                    // blockUserSelection: false,
+                    // blockPrint: false,
+                    // blockDownload: false,
+                }}
                 pdfUrl={pdfFile || sample}
                 pdfPassword={pdfPassword || "sample"}
                 compHeight={"calc(100vh - 45px)"}

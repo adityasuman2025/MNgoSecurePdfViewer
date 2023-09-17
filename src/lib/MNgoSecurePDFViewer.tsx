@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf';
 import "react-pdf/dist/esm/Page/AnnotationLayer.css"
+import "react-pdf/dist/esm/Page/TextLayer.css"
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 import './MNgoSecurePDFViewer.css';
+import { nextIcon, prevIcon, minusIcon, plusIcon, downloadIcon, fullScreenIcon } from './images';
 
 /*
-Secure PDF Viewer
+MNgo Secure PDF Viewer
 
 ✅ block right click
 ✅ disable user select
@@ -18,7 +20,7 @@ Secure PDF Viewer
 */
 
 const MWEB_WIDTH = 650, THUMB_VIEW_WIDTH = 768, TOOL_BAR_HEIGHT = 60;
-const TOOL_BAR_BTN_CLASS_NAME = "bn bg-white black br2 pointer f6-5 mh-0-33 pv-0-33 ph-0-67";
+const TOOL_BAR_BTN_CLASS_NAME = "bn bg-white black br2 pointer f6-5 mh-0-33 pv-0-40 ph-0-67 flex items-center justify-center";
 const DISABLED_TOOL_BAR_BTN_CLASS_NAME = "o-50 pointer-events-none";
 
 
@@ -48,11 +50,18 @@ function MNgoSecurePDFViewer({
         pdfThumbContainerClassName = "",
         pdfThumbPageClassName = "",
     } = {},
+    securityOptions: {
+        blockRightClick = true,
+        blockUserSelection = true,
+        blockDownload = true,
+        blockPrint = true,
+    } = {},
     pdfUrl,
     pdfPassword,
     compHeight = "100vh",
 }: {
     styles?: { [key: string]: string },
+    securityOptions?: { [key: string]: boolean },
     pdfUrl: string,
     pdfPassword?: string,
     compHeight?: string,
@@ -82,15 +91,15 @@ function MNgoSecurePDFViewer({
         function handleContextmenu(e: any) {
             e.preventDefault();
         }
-
-        document.addEventListener('contextmenu', handleContextmenu)
+        if (blockRightClick) document.addEventListener('contextmenu', handleContextmenu)
         /*------disable context menu------*/
 
 
         return function cleanup() {
             window.onresize = null;
             pdfViewer.removeEventListener("scroll", debouncedHandleScroll);
-            document.removeEventListener('contextmenu', handleContextmenu);
+
+            if (blockRightClick) document.removeEventListener('contextmenu', handleContextmenu);
         }
     }, []);
 
@@ -132,39 +141,77 @@ function MNgoSecurePDFViewer({
         }
     }
 
+    function handleDownloadClick() {
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.download = 'MNgoSecurePDFViewer.pdf';
+        link.click();
+    }
+
     return (
         <>
             {
                 pdfUrl &&
-                <div className={`no-user-select pdfComponent ${pdfComponentClassName}`}>
-                    <div className={`flex items-center justify-between white ba ph-1 toolbar ${toolbarClassName}`} style={{ height: TOOL_BAR_HEIGHT }}>
+                <div className={`
+                    ${blockUserSelection ? "no-user-select" : ""} ${blockPrint ? "blockPrint" : ""}  pdfComponent ${pdfComponentClassName}
+                `}>
+                    <div className={`noPrint flex items-center justify-between white ba ph-1 toolbar ${toolbarClassName}`} style={{ height: TOOL_BAR_HEIGHT }}>
                         <div className={`flex items-center justify-center ${toolbarSegClassName}`}>
-                            <button
-                                className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName} ${activePage === 1 ? DISABLED_TOOL_BAR_BTN_CLASS_NAME : ""}`}
+                            <div
+                                className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName} ${activePage === 1 ? DISABLED_TOOL_BAR_BTN_CLASS_NAME : ''}`}
                                 onClick={() => handleGoToPage(activePage - 1)}
-                            >{"<"}</button>
-                            <button
-                                className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName} ${activePage === totalPagesCount ? DISABLED_TOOL_BAR_BTN_CLASS_NAME : ""}`}
-                                onClick={() => handleGoToPage(activePage + 1)}
-                            >{">"}</button>
+                            >
+                                <img src={prevIcon} alt="prev" height={windowWidth <= MWEB_WIDTH ? 9 : 11} />
+                            </div>
 
-                            <div>Page {activePage}<span style={{ opacity: 0.5 }}>/{totalPagesCount}</span></div>
+                            <div
+                                className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName} ${activePage === totalPagesCount ? DISABLED_TOOL_BAR_BTN_CLASS_NAME : ''}`}
+                                onClick={() => handleGoToPage(activePage + 1)}
+                            >
+                                <img src={nextIcon} alt="next" height={windowWidth <= MWEB_WIDTH ? 9 : 11} />
+                            </div>
+
+                            <div className='f6'>Page {activePage}<span style={{ opacity: 0.5 }}>/{totalPagesCount}</span></div>
                         </div>
 
                         <div className={`flex items-center justify-center ${toolbarSegClassName}`}>
-                            <button className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`} onClick={() => setScale(prev => prev - 0.1)}>{"-"}</button>
+                            <div
+                                className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`}
+                                onClick={() => setScale((prev) => prev - 0.1)}
+                            >
+                                <img src={minusIcon} alt="minus" height={windowWidth <= MWEB_WIDTH ? 8 : 11} />
+                            </div>
                             <div className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`}>{Math.floor(scale * 100)}%</div>
-                            <button className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`} onClick={() => setScale(prev => prev + 0.1)}>{"+"}</button>
+                            <div
+                                className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`}
+                                onClick={() => setScale((prev) => prev + 0.1)}
+                            >
+                                <img src={plusIcon} alt="plus" height={windowWidth <= MWEB_WIDTH ? 8 : 11} />
+                            </div>
 
-                            <button className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`} onClick={toggleFullScreen}>{"[-]"}</button>
+                            {
+                                !blockDownload &&
+                                <div
+                                    className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`}
+                                    onClick={handleDownloadClick}
+                                >
+                                    <img src={downloadIcon} alt="download" height={windowWidth <= MWEB_WIDTH ? 8 : 11} />
+                                </div>
+                            }
+
+                            <div
+                                className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`}
+                                onClick={toggleFullScreen}
+                            >
+                                <img src={fullScreenIcon} alt="fullScreen" height={windowWidth <= MWEB_WIDTH ? 8 : 11} />
+                            </div>
                         </div>
                     </div>
 
                     <div className="overflow-hidden relative flex items-center justify-center">
-                        {
-                            (windowWidth > THUMB_VIEW_WIDTH) &&
+                        {(windowWidth > THUMB_VIEW_WIDTH) && (
                             <div
-                                className={`relative top-0 left-0 overflow-x-hidden overflow-y-auto pdfThumbContainer ${pdfThumbContainerClassName}`}
+                                className={`noPrint relative top-0 left-0 overflow-x-hidden overflow-y-auto pdfThumbContainer ${pdfThumbContainerClassName}`}
                                 style={{ maxHeight: `calc(${compHeight} - ${TOOL_BAR_HEIGHT}px)`, minHeight: `calc(${compHeight} - ${TOOL_BAR_HEIGHT}px)` }}
                             >
                                 <Document file={pdfUrl} onPassword={(cb: any) => cb(pdfPassword)} >
@@ -182,7 +229,7 @@ function MNgoSecurePDFViewer({
                                     }
                                 </Document>
                             </div>
-                        }
+                        )}
 
                         <div id="pdfViewer"
                             className={`flex justify-center overflow-auto w-100 ${pdfViewerClassName}`}
@@ -199,7 +246,7 @@ function MNgoSecurePDFViewer({
                                             <Page
                                                 pageNumber={idx + 1}
                                                 scale={scale * (windowWidth < MWEB_WIDTH ? 0.5 : 1)}
-                                                renderTextLayer={false} renderAnnotationLayer={false}
+                                                renderTextLayer={!blockUserSelection} renderAnnotationLayer={false}
                                             />
                                         </div>
                                     )

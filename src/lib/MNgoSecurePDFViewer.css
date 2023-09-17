@@ -124,6 +124,11 @@
     padding-bottom: var(--spacing-0-33);
 }
 
+.pv-0-40 {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+}
+
 .ph-0-67 {
     padding-left: var(--spacing-0-67);
     padding-right: var(--spacing-0-67);
@@ -215,10 +220,11 @@
 
 
 @media print {
-
-    html,
-    body {
+    .noPrint {
         display: none;
-        /* hide whole page */
+    }
+
+    .blockPrint {
+        display: none;
     }
 }

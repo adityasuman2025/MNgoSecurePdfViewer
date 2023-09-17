@@ -29,6 +29,7 @@ A JavaScript React Library (npm package) to open any pdf (password protected or 
 
     <MNgoSecurePDFViewer
         styles={{ [key: string]: string }}
+        securityOptions=={{ [key: string]: boolean }}
         pdfUrl={string}
         pdfPassword={string}
         compHeight={string}
@@ -39,19 +40,26 @@ A JavaScript React Library (npm package) to open any pdf (password protected or 
 1.  `styles` different classes to override different style of elements
 
                {
-                  pdfComponentClassName: string
-                  toolbarClassName: string
-                  toolbarSegClassName: string
-                  toolBarBtnClassName: string
-                  pdfViewerClassName: string
-                  pdfPageClassName: string
-                  pdfThumbContainerClassName: string
-                  pdfThumbPageClassName: string
+                    pdfComponentClassName: string
+                    toolbarClassName: string
+                    toolbarSegClassName: string
+                    toolBarBtnClassName: string
+                    pdfViewerClassName: string
+                    pdfPageClassName: string
+                    pdfThumbContainerClassName: string
+                    pdfThumbPageClassName: string
                }
 
-2.  `pdfUrl` url (internal or extneral) of the pdf to open
-3.  `pdfPassword` password of the pdf if, the pdf is password protected
-4.  `compHeight` height of the component
+2.  `securityOptions` by default all security options are enabled, 
+                {
+                    blockRightClick: boolean, // by default true
+                    blockUserSelection: boolean, // by default true
+                    blockPrint: boolean, // by default true
+                    blockDownload: boolean, // by default true
+               }
+3.  `pdfUrl` url (internal or extneral) of the pdf to open
+4.  `pdfPassword` password of the pdf if, the pdf is password protected
+5.  `compHeight` height of the component
 
 ## Installation
 

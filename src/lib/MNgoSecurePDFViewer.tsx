@@ -182,7 +182,7 @@ function MNgoSecurePDFViewer({
                             >
                                 <img src={minusIcon} alt="minus" height={iconDimn} width={iconDimn} />
                             </div>
-                            <div className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`}>{Math.floor(scale * 100)}%</div>
+                            <div className='f6-5'>{Math.floor(scale * 100)}%</div>
                             <div
                                 className={`${TOOL_BAR_BTN_CLASS_NAME} ${toolBarBtnClassName}`}
                                 onClick={() => setScale((prev) => prev + 0.1)}

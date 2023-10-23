@@ -62,7 +62,7 @@ function App() {
                 }}
                 pdfUrl={pdfFile || sample}
                 pdfPassword={pdfPassword || "sample"}
-                compHeight={"calc(100vh - 45px)"}
+                compHeight={"calc(100vh - 43px)"}
             />
         </>
     )

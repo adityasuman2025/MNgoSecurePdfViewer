@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf';
 import "react-pdf/dist/esm/Page/AnnotationLayer.css"
 import "react-pdf/dist/esm/Page/TextLayer.css"
@@ -37,7 +37,7 @@ function debounce(func: (...args: any[]) => void, delay: number) {
 }
 
 function MNgoSecurePDFViewer({
-    styles: {
+    theming: {
         pdfComponentClassName = "",
 
         toolbarClassName = "",
@@ -50,6 +50,8 @@ function MNgoSecurePDFViewer({
         pdfThumbContainerClassName = "",
         pdfThumbPageClassName = "",
     } = {},
+    loadingRenderer = "Please wait!",
+    errorRenderer = "Failed to open pdf!",
     securityOptions: {
         blockRightClick = true,
         blockUserSelection = true,
@@ -60,7 +62,9 @@ function MNgoSecurePDFViewer({
     pdfPassword,
     compHeight = "100vh",
 }: {
-    styles?: { [key: string]: string },
+    theming?: { [key: string]: string },
+    loadingRenderer?: string | ReactElement,
+    errorRenderer?: string | ReactElement,
     securityOptions?: { [key: string]: boolean },
     pdfUrl: string,
     pdfPassword?: string,
@@ -215,7 +219,7 @@ function MNgoSecurePDFViewer({
                                 className={`noPrint relative top-0 left-0 overflow-x-hidden overflow-y-auto pdfThumbContainer ${pdfThumbContainerClassName}`}
                                 style={{ maxHeight: `calc(${compHeight} - ${TOOL_BAR_HEIGHT}px)`, minHeight: `calc(${compHeight} - ${TOOL_BAR_HEIGHT}px)` }}
                             >
-                                <Document file={pdfUrl} onPassword={(cb: any) => cb(pdfPassword)} >
+                                <Document file={pdfUrl} onPassword={(cb: any) => cb(pdfPassword)} loading="" error="">
                                     {
                                         Array(totalPagesCount).fill(0).map((_, idx) =>
                                             <div
@@ -240,6 +244,8 @@ function MNgoSecurePDFViewer({
                                 file={pdfUrl}
                                 onLoadSuccess={onDocumentLoadSuccess}
                                 onPassword={(cb: any) => cb(pdfPassword)}
+                                loading={loadingRenderer}
+                                error={errorRenderer}
                             >
                                 {
                                     Array(totalPagesCount).fill(0).map((_, idx) =>

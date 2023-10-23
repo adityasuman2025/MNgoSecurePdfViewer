@@ -1,4 +1,4 @@
-# react-image-annotate-mngo
+# react-secure-pdf-viewer-mngo
 
 This library is available at [react-secure-pdf-viewer-mngo](https://www.npmjs.com/package/react-secure-pdf-viewer-mngo)
 
@@ -28,7 +28,9 @@ A JavaScript React Library (npm package) to open any pdf (password protected or 
 ## Usage
 
     <MNgoSecurePDFViewer
-        styles={{ [key: string]: string }}
+        theming={{ [key: string]: string }}
+        loadingRenderer={string | ReactElement}
+        errorRenderer={string | ReactElement}
         securityOptions=={{ [key: string]: boolean }}
         pdfUrl={string}
         pdfPassword={string}
@@ -37,7 +39,7 @@ A JavaScript React Library (npm package) to open any pdf (password protected or 
 
 `props example`
 
-1.  `styles` different classes to override different style of elements
+1.  `theming` different classes to override different style of elements
 
                {
                     pdfComponentClassName: string
@@ -50,7 +52,12 @@ A JavaScript React Library (npm package) to open any pdf (password protected or 
                     pdfThumbPageClassName: string
                }
 
-2.  `securityOptions` by default all security options are enabled, 
+
+2.  `loadingRenderer` string or DOM element to show while pdf is loading
+
+3.  `errorRenderer` string or DOM element to show when pdf failed to load
+
+4.  `securityOptions` by default all security options are enabled, 
 
                 {
                     blockRightClick: boolean, // by default true
@@ -59,9 +66,9 @@ A JavaScript React Library (npm package) to open any pdf (password protected or 
                     blockDownload: boolean, // by default true
                }
                
-3.  `pdfUrl` url (internal or extneral) of the pdf to open
-4.  `pdfPassword` password of the pdf if, the pdf is password protected
-5.  `compHeight` height of the component
+5.  `pdfUrl` url (internal or extneral) of the pdf to open
+6.  `pdfPassword` password of the pdf if, the pdf is password protected
+7.  `compHeight` height of the component
 
 ## Installation
 

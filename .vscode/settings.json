@@ -10,6 +10,7 @@
         "*.css": "css",
         "*.html": "html",
         "*.java": "java",
+        "*.json": "json",
     },
     "[javascript]": {
         "editor.formatOnSave": true,
@@ -30,6 +31,9 @@
         "editor.formatOnSave": true,
     },
     "[java]": {
+        "editor.formatOnSave": true,
+    },
+    "[json]": {
         "editor.formatOnSave": true,
     },
     "eslint.alwaysShowStatus": true,
